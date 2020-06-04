@@ -7,16 +7,15 @@ defmodule Yauth.Application do
 
   def start(_type, _args) do
     children = [
-      # Start the Ecto repository
-      Yauth.Repo,
       # Start the Telemetry supervisor
       YauthWeb.Telemetry,
       # Start the PubSub system
       {Phoenix.PubSub, name: Yauth.PubSub},
       # Start the Endpoint (http/https)
-      YauthWeb.Endpoint
+      YauthWeb.Endpoint,
       # Start a worker by calling: Yauth.Worker.start_link(arg)
       # {Yauth.Worker, arg}
+      {Task.Supervisor, name: Yauth.TaskSupervisor}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

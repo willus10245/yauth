@@ -8,7 +8,9 @@
 use Mix.Config
 
 config :yauth,
-  ecto_repos: [Yauth.Repo]
+  auth_server: :"auth@Scotts-MBP",
+  accounts_module: :"Elixir.AuthServer.Accounts",
+  auth_task_supervisor: :"Elixir.AuthServer.TaskSupervisor"
 
 # Configures the endpoint
 config :yauth, YauthWeb.Endpoint,

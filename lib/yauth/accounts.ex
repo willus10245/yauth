@@ -1,42 +1,40 @@
 defmodule Yauth.Accounts do
-  alias Yauth.Repo
-  alias __MODULE__.Account
+  @auth_server Application.get_env(:yauth, :auth_server)
+  @accounts_module Application.get_env(:yauth, :accounts_module)
+  @auth_task_supervisor Application.get_env(:yauth, :auth_task_supervisor)
 
-  def get_or_register(%Ueberauth.Auth{info: %{email: email}} = params) do
-    if account = get_by_email(email) do
-      {:ok, account}
-    else
-      register(params)
-    end
+  def get_or_register(%Ueberauth.Auth{} = params) do
+    spawn_task(:get_or_register, [params])
   end
 
   def register(%Ueberauth.Auth{provider: :identity} = params) do
-    %Account{}
-    |> Account.changeset(extract_account_params(params))
-    |> Repo.insert()
+    spawn_task(:register, [params])
   end
 
   def register(%Ueberauth.Auth{} = params) do
-    %Account{}
-    |> Account.oauth_changeset(extract_account_params(params))
-    |> Repo.insert()
+    spawn_task(:register, [params])
   end
 
   def get_account(id) do
-    Repo.get(Account, id)
+    spawn_task(:get_account, [id])
   end
 
   def get_by_email(email) do
-    Repo.get_by(Account, email: email)
+    spawn_task(:get_by_email, [email])
   end
 
-  def change_account(account \\ %Account{}) do
-    Account.changeset(account, %{})
+  def change_account() do
+    spawn_task(:change_account, [])
   end
 
-  defp extract_account_params(%{credentials: %{other: other}, info: info}) do
-    info
-    |> Map.from_struct()
-    |> Map.merge(other)
+  defp spawn_task(fun, args) do
+    @auth_server
+    |> remote_supervisor()
+    |> Task.Supervisor.async(@accounts_module, fun, args)
+    |> Task.await()
+  end
+
+  defp remote_supervisor(recipient) do
+    {@auth_task_supervisor, recipient}
   end
 end

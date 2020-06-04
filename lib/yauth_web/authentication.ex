@@ -3,7 +3,7 @@ defmodule YauthWeb.Authentication do
   Implementation module for Guardian and functions for authentication.
   """
   use Guardian, otp_app: :yauth
-  alias Yauth.{Accounts, Accounts.Account}
+  alias Yauth.Accounts
 
   def subject_for_token(resource, _claims) do
     {:ok, to_string(resource.id)}
@@ -16,7 +16,7 @@ defmodule YauthWeb.Authentication do
     end
   end
 
-  def authenticate(%Account{} = account, password) do
+  def authenticate(%{} = account, password) do
     authenticate(
       account,
       password,
