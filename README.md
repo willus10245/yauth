@@ -1,18 +1,14 @@
 # Yauth
 
-To start your Phoenix server:
+Testing distributed microservices with Elixir
 
-  * Setup the project with `mix setup`
-  * Start Phoenix endpoint with `mix phx.server`
+The backend for the accounts code now lives in a [different repo](https://github.com/willus10245/auth_server).
 
-Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
+To get the functioning experience:
 
-Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).
+* clone both repos and install dependencies
+* start the auth server with a name `iex --sname auth@localhost -S mix`
+* start the web server in a different terminal `iex --sname web@localhost -S mix phx.server`
+* from the iex console of the web server, connect to the auth server `> Node.connect(:auth@localhost)`
 
-## Learn more
-
-  * Official website: https://www.phoenixframework.org/
-  * Guides: https://hexdocs.pm/phoenix/overview.html
-  * Docs: https://hexdocs.pm/phoenix
-  * Forum: https://elixirforum.com/c/phoenix-forum
-  * Source: https://github.com/phoenixframework/phoenix
+Now you can visit [`localhost:4000/register`](http://localhost:4000/register) from your browser, and create an account, and the user will be created in the database on the auth server.
