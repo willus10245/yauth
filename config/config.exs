@@ -7,11 +7,6 @@
 # General application configuration
 use Mix.Config
 
-config :yauth,
-  auth_server: :"auth@localhost",
-  accounts_module: :"Elixir.AuthServer.Accounts",
-  auth_task_supervisor: :"Elixir.AuthServer.TaskSupervisor"
-
 # Configures the endpoint
 config :yauth, YauthWeb.Endpoint,
   url: [host: "localhost"],
